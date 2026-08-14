@@ -1269,6 +1269,16 @@ async def start_extended_workers():
             if not task_obj.is_running(): task_obj.start()
         except RuntimeError: pass
 
+
+async def sync_commands_to_guilds():
+    for guild in bot.guilds:
+        try:
+            bot.tree.copy_global_to(guild=guild)
+            await bot.tree.sync(guild=guild)
+            print(f"✅ Slash commands synced to: {guild.name} ({guild.id})")
+        except Exception as e:
+            print(f"❌ Failed to sync commands to {guild.id}: {e}")
+
 @bot.event
 async def on_member_join(member):
     cfg=get_config(member.guild.id)
